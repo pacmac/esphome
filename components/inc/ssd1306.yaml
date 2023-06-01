@@ -1,0 +1,23 @@
+- model: "SSD1306 128x64"
+  platform: ssd1306_i2c
+  address: 0x3c
+  lambda: |-
+    it.print(0, 0, id(sans_s), "Hello World!");
+
+# display:
+#   - <<: !include ../pac/esphome/inc/ssd1306.yaml
+#     model: "SSD1306 128x63"
+#     lambda: |-
+#       it.line(0,0,127,0);
+#       it.line(0,63,0,0);
+#       it.line(127,0,127,63);
+#       it.line(0,63,127,63);
+#       it.print(2,2, id(sans_s), "Hello World!");
+
+#     model: "SSD1306 128x32"
+#     lambda: |-
+#       it.line(0,0,127,0);
+#       it.line(0,31,0,0);
+#       it.line(127,0,127,31);
+#       it.line(0,31,127,31);
+#       it.print(2,2, id(sans_s), "Hello World!");

@@ -1,0 +1,95 @@
+substitutions:
+  refresh: "30s"
+#   name: "esp32"
+
+button:
+- platform: safe_mode
+  name: Safe Mode Boot
+  entity_category: diagnostic
+
+binary_sensor:
+  - platform: status
+    name: "Status"
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: IP
+      id: wifi_ip 
+    
+    ssid:
+      name: SSID
+      id: wifi_ssid
+    
+    mac_address:
+      name: MAC
+      id: wifi_mac
+
+  - platform: version
+    name: Version
+    hide_timestamp: true
+
+  - platform: template
+    name: Uptime
+    id: uptime_human
+    icon: mdi:clock-start
+
+  - platform: template
+    name: Signal
+    id: wifi_bars
+    icon: "mdi:wifi"
+    entity_category: diagnostic
+    update_interval: $refresh
+
+    lambda: |-
+
+        if (id(wifi_sig).state >= -30) {
+          id(wifi_bars).set_icon("mdi:wifi-strength-4");
+          return {"100%"};
+        } else if (id(wifi_sig).state < -30 && id(wifi_sig).state >= -67) {
+          id(wifi_bars).set_icon("mdi:wifi-strength-3");
+          return {"80%"};
+        } else if (id(wifi_sig).state < -67 && id(wifi_sig).state >= -70) {
+          id(wifi_bars).set_icon("mdi:wifi-strength-2");
+          return {"60%"};
+        } else if (id(wifi_sig).state < -70 && id(wifi_sig).state >= -80) {
+          id(wifi_bars).set_icon("mdi:wifi-strength-1");
+          return {"40%"};
+        } else {
+          // id(wifi_bars).set_icon("mdi:wifi-strength-alert-outline");
+          return {"20%"};
+        }
+
+sensor:
+
+  - platform: wifi_signal
+    id: wifi_sig
+    # name: Signal
+    update_interval: $refresh
+
+  - platform: uptime
+    id: dev_uptime
+    # name: Uptime
+    update_interval: 60s
+    on_raw_value:
+      then:
+        - text_sensor.template.publish:
+            id: uptime_human
+            state: !lambda |-
+                int seconds = round(id(dev_uptime).raw_state);
+                int days = seconds / (24 * 3600);
+                seconds = seconds % (24 * 3600);
+                int hours = seconds / 3600;
+                seconds = seconds % 3600;
+                int minutes = seconds /  60;
+                seconds = seconds % 60;
+                return (
+                  (days ? to_string(days) + "d " : "") +
+                  (hours ? to_string(hours) + "h " : "") +
+                  (minutes ? to_string(minutes) + "m " : "") +
+                  (to_string(seconds) + "s")
+                ).c_str();
+
+switch:
+  - platform: restart
+    name: $name Restart
