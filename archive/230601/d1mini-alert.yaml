@@ -1,0 +1,27 @@
+packages:
+  wifi        : !include pri/wifi.yaml
+  device      : !include devices/d1minipro.yaml
+  info        : !include inc/info.yaml
+  
+substitutions:
+  mac         : "8b7e"
+  app         : "d1-alert"
+  name        : "${app}_${mac}"
+
+esphome:
+  name: $name
+
+# wifi:
+#   use_address:  192.168.0.212
+
+switch:
+  - platform: gpio
+    pin: D2
+    id: beep
+    name: "Beep"
+    icon: "mdi:trumpet"
+    on_turn_on:
+    - delay: 50ms
+    - switch.turn_off: beep
+
+    

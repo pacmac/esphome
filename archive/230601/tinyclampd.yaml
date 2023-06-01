@@ -1,0 +1,15 @@
+packages:
+  device    : !include apps/tiny_clamp.yaml
+  wifi      : !include pri/wifi.yaml
+  info      : !include inc/info.yaml
+  # local     : !include ../local.yaml
+  # blegw     : !include inc/ble_gateway.yaml
+
+substitutions:
+  #mac         : "6f74"    #SG
+  mac         : "70d8"   #UK
+
+
+
+wifi:
+  use_address:  192.168.10.153
