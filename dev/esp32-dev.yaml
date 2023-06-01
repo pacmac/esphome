@@ -1,0 +1,16 @@
+packages:
+  wifi: !include inc/wifi.yaml
+
+substitutions:
+  mac: "d760"
+  app: "esp32-dev"
+
+esphome:
+  name: ${app}_${mac}
+
+esp32:
+  board: esp32dev
+
+logger:
+api:
+captive_portal:

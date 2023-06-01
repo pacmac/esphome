@@ -1,0 +1,22 @@
+substitutions:
+  mac         : "0000"
+  name        : "tiny-pico"
+  address     : "${name}_${mac}.local"
+  
+esphome:
+  name: ${name}
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Modules
+logger:
+api:
+improv_serial:
+# esp32_improv:
+#   authorizer: none
+captive_portal:
+web_server:

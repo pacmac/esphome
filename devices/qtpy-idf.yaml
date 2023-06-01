@@ -1,0 +1,23 @@
+## Needs Clean Builds
+substitutions:
+  mac: "0000"
+  app: "qtpy_idf"
+  
+esphome:
+  name: ${app}_${mac}
+  platformio_options:
+    board_build.flash_mode: dio
+    
+esp32:
+  board: esp32-c3-devkitm-1
+  variant: ESP32C3
+  framework:
+    type: esp-idf
+
+api:
+#captive_portal:
+improv_serial:
+logger:
+# esp32_improv:
+#   authorizer: none
+# web_server:

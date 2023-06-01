@@ -1,0 +1,23 @@
+packages:
+  wifi: !include inc/wifi.yaml
+  device_base: !include inc/qtpy.yaml
+
+substitutions:
+  mac         : "fd8c"
+  project     : "qtpy"
+  name        : "${project}_${mac}"
+#  address     : "${name}.local"
+  address     : "192.168.0.227"
+  wifi_id     : "_${mac}_signal"
+  update      : "10s"
+  
+sensor:
+  - platform: wifi_signal
+    id: $wifi_id
+    name: $name Signal
+    update_interval: $update
+    
+esp32_ble_tracker:
+text_sensor:
+  - platform: ble_scanner
+    name: "BLE Scanner"

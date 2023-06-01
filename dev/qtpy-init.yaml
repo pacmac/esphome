@@ -1,0 +1,13 @@
+packages:
+  device    : !include devices/qtpy-idf.yaml
+  wifi      : !include inc/wifi.yaml
+
+substitutions:
+  mac: "fd8c"
+  app: "qtpy-init"
+  
+esphome:
+  name: ${app}_${mac}
+
+wifi:
+  use_address:  192.168.0.227

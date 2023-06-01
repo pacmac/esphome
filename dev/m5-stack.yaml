@@ -1,0 +1,34 @@
+packages:
+  wifi: !include inc/wifi.yaml
+  device_base: !include inc/m5stack.yaml
+
+substitutions:
+    mac: "65c8"
+ #   mac: "39b8"
+ #   address: "192.168.0.203"
+ #   address: "192.168.0.214"
+
+# esp32_ble_tracker:
+# bluetooth_proxy:
+
+display:
+  - platform: ili9341
+    id: m5stack_display
+    model: M5Stack
+    cs_pin: $cs_pin
+    dc_pin: $dc_pin
+    led_pin: $led_pin
+    reset_pin: $reset_pin
+    rotation: 0
+    lambda: |-
+      // colour aliases
+      auto red = Color(0, 255, 255);
+      auto green = Color(255,0,255);
+      auto blue = Color(255, 255, 0);
+      auto white = Color(0, 0, 0);
+      auto black = Color(255,255,255);
+      
+      it.fill(black);
+      
+      it.print(0, 0, id(font_roboto_medium22), blue, TextAlign::TOP_LEFT, "Hello World!");
+      it.printf(0,23, id(font_roboto_medium22), white, "%.0f %%", (id(wifi_sig).state)+101);

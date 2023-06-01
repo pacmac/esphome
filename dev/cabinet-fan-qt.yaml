@@ -1,0 +1,358 @@
+## https://community.home-assistant.io/t/4-pin-pwm-fan-set-level-and-start-stop-with-esphome/325979
+## https://community.home-assistant.io/t/pwm-fan-controller/433316
+## https://github.com/patrickcollins12/esphome-fan-controller
+## https://github.com/esphome/issues/issues/2946
+## http://cabinet_fan_fd8c.local/
+
+packages:
+  wifi: !include inc/wifi.yaml
+  device_base: !include inc/qtpy.yaml
+
+substitutions:
+  project       : "cabinet_fan"
+  friendly_name : $project
+  mac           : "fd8c"
+  name          : "${project}_${mac}"
+#  name          : "${project}"
+  address       : "${name}.local"
+#  address       : 192.168.0.227
+
+  wifi_id       : "${name}_signal"
+  rpm_id        : "${name}_rpm"
+  temp_id       : "${name}_temp"
+  uptime_id     : "${name}_uptime"
+  pwmout_id     : "${name}_pwmout" 
+  
+  pwm_freq      : 25000 Hz
+  target_temp   : 26°C
+  
+  min_temp      : 20°C
+  max_temp      : 35°C 
+  
+  pid_interval  : 15s
+  
+  ## PINS
+  pin_led       : "GPIO2"
+  pin_dallas    : "GPIO7"
+  
+  pin_pwmin     : "GPIO1"
+  pin_pwmout    : "GPIO4"
+  pin_heat      : "GPIO5"
+  pin_button    : "GPIO9"
+  
+  ## PID Defaults
+  ki_initial    : "0.0047"
+  kp_initial    : "2.53"
+  kd_initial    : "341.88"
+
+# globals:
+#   - id: dhttemp
+#     type: float
+#     restore_value: yes
+#     initial_value: '0'
+
+# pid climate log update is noisy, dial it back to warn
+logger:
+  level: DEBUG
+  logs: 
+    climate: ERROR
+
+binary_sensor:
+  - platform: gpio
+    pin: $pin_button
+    name: "Button"
+
+dallas:
+  - pin: $pin_dallas
+    
+light:
+  - platform: neopixelbus
+    id: status_led
+    name: ${name} Status LED
+    type: GRB
+    variant: WS2812x
+    method: ESP32_RMT_1
+    num_leds: 1
+    pin: $pin_led
+    effects:
+      - random:
+      - flicker:
+      - addressable_rainbow:
+      - pulse:
+
+# service: light.turn_on
+#   data:
+#     effect: flicker
+#   target:
+#     entity_id: light.status_led
+
+number:
+
+  ## RECEIVE kp,ki and kd parameters from input_text.kx helpers in 
+  # Home Assistant. See the PID controller below
+  # These helper values will get saved to flash thus permanently over-riding 
+  # the initial values set in the PID below.
+
+  # KP
+  - platform: template
+    name: $name kp
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: $kp_initial
+    max_value: 50
+    # initial_value: $kp_initial
+    step: 0.001
+    set_action: 
+      lambda: |- 
+        // ESP_LOGI("main", "!!!!!! kp from boot %d", id("console_fan_kp") );
+        // id(pid_data).set_kp( id("$name kp") );
+        id(pid_data).set_kp( x );
+
+  # KI
+  - platform: template
+    name: $name ki
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: $ki_initial
+    # initial_value: $ki_initial
+    max_value: 50
+    step: 0.0001
+    set_action: 
+      lambda: id(pid_data).set_ki( x );
+
+  # KD
+  - platform: template
+    name: $name kd
+    icon: mdi:chart-bell-curve
+    restore_value: true
+    min_value: $kd_initial
+    max_value: 400
+    # initial_value: $kd_initial
+    step: 0.001
+    set_action: 
+      lambda: id(pid_data).set_kd( x );
+
+sensor:
+
+  ## WIFI
+  - platform: wifi_signal
+    id: $wifi_id
+    name: $name Signal
+    update_interval: 60s
+
+  ## DS18S20B One Wire
+  - platform: dallas
+    id: $temp_id
+    name: $name Temperature
+    index: 0
+    unit_of_measurement: "°C"
+    accuracy_decimals: 2
+    filters:
+      - exponential_moving_average:  
+         alpha: 0.1
+         send_every: 1
+
+    on_value:
+      then:
+      - if:
+          condition:
+            lambda: return (x > float(id(pid_data).target_temperature_low));
+          then:
+            - light.turn_on:
+                id: status_led
+                effect: pulse
+                brightness: 50%
+                red: 100%
+                green: 0%
+                blue: 0%
+          else:
+            - light.turn_on:
+                id: status_led
+                effect: none
+                brightness: 50%
+                red: 0%
+                green: 100%
+                blue: 0%          
+    
+  # Reports RPM by pulse_counter
+  # fan speed [rpm] = frequency [Hz] × 60 ÷ 2
+  - platform: pulse_counter
+    pin: $pin_pwmin
+    id: $rpm_id
+    name: $name Fan RPM
+    unit_of_measurement: 'RPM'
+    filters:
+      - multiply: 0.5
+#      - lambda: |-
+#          if (x <= 1500) return x;
+#          else return {};
+    count_mode:
+      rising_edge: INCREMENT
+      falling_edge: DISABLE
+    update_interval: 5s
+    accuracy_decimals: 0
+
+  # Reports how long the device has been powered (in minutes)
+  - platform: uptime
+    id: $uptime_id
+    name: $name Uptime
+    filters:
+      - lambda: return x / 60.0;
+    unit_of_measurement: minutes
+
+  # START THE FAN PID CONTROLLER SETUP
+  - platform: template
+    internal: true
+    name: $name p term
+    id: p_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    internal: true
+    name: $name i term
+    id: i_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    internal: true
+    name: $name d term
+    id: d_term
+    unit_of_measurement: "%"
+    accuracy_decimals: 2
+
+  - platform: template
+    internal: true
+    name: $name output value
+    unit_of_measurement: "%"
+    id: o_term
+    accuracy_decimals: 2
+
+  - platform: template
+    internal: true
+    name: $name error value
+    id: e_term
+    accuracy_decimals: 2
+
+  - platform: template
+    internal: true
+    name: $name zero 
+    id: zero_value
+    update_interval: $pid_interval
+    lambda: |-
+      return 0;
+      
+  - platform: template
+    internal: true
+    name: $name zero percent
+    unit_of_measurement: "%"
+    id: zero_value_percent
+    update_interval: $pid_interval
+    lambda: |-
+      return 0;
+      
+#   - platform: template
+#     id: ${name}_led_status
+#     name: $name LED status
+#     update_interval: $pid_interval
+#     lambda: |-
+#       if (id($temp_id).state > id(pid_data).target_temperature_low){
+#         id(status_led).turn_on();
+#         return true;
+#       }
+#       else {
+#         id(status_led).turn_off();
+#         return false;
+#       }
+
+  - platform: template
+    id: ${name}_act_temp
+    name: ${name}_act_temp
+    lambda: |-
+      return id($temp_id).state;
+
+  - platform: template
+    id: ${name}_set_temp
+    name: ${name}_set_temp
+    lambda: |-
+      return id(pid_data).target_temperature_low;
+      
+output:
+  - platform: ledc
+    id: console_heat_speed
+    pin: $pin_heat
+
+  - platform: ledc
+    id: console_fan_speed
+    pin: $pin_pwmout
+
+    # 25KHz is standard PC fan frequency, minimises buzzing
+    frequency: $pwm_freq 
+
+    # fans stop working below 13% powerful.
+    min_power: 10%
+#    max_power: 100%
+
+# Good for debugging, you can manually set the fan speed.
+fan:
+  - platform: speed
+    output: console_fan_speed
+    name: $name Fan Override
+
+# Expose a PID-controlled Thermostat
+# Manual: https://esphome.io/components/climate/pid.html
+climate:
+  - platform: pid
+    name: $name Thermostat
+    id: pid_data
+    sensor: $temp_id
+    default_target_temperature: $target_temp
+    
+    cool_output: console_fan_speed
+
+    # dummy heater. enable this if using autotune
+    heat_output: console_heat_speed
+
+    on_state:
+      - sensor.template.publish:
+          id: p_term
+          state: !lambda 'return -id(pid_data).get_proportional_term() * 100.0;'
+      - sensor.template.publish:
+          id: i_term
+          state: !lambda 'return -id(pid_data).get_integral_term()* 100.0;'
+      - sensor.template.publish:
+          id: d_term
+          state: !lambda 'return -id(pid_data).get_derivative_term()* 100.0;'
+      - sensor.template.publish:
+          id: o_term
+          state: !lambda 'return -id(pid_data).get_output_value()* 100.0;'
+      - sensor.template.publish:
+          id: e_term
+          state: !lambda 'return -id(pid_data).get_error_value();'
+        
+    # The extents of the HA Thermostat
+    visual:
+      min_temperature: $min_temp
+      max_temperature: $max_temp
+      temperature_step: 0.50 °C
+ 
+  
+    # See the README for setting up these parameters.
+    # These are over ridden by the number templates above.
+    control_parameters:
+      kp: $kp_initial   # 0.15
+      ki: $ki_initial   # 0.004
+      kd: $kd_initial   # 0.5
+      max_integral: 0.0
+
+switch:
+  # Expose an ESP32 restart button to HA
+  - platform: restart
+    name: $name Restart
+  
+  # Enable Autotune 
+  - platform: template
+    name: $name PID Autotune
+    turn_on_action:
+      - climate.pid.autotune: pid_data

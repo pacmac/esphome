@@ -1,0 +1,38 @@
+esp8266:
+  board: d1_mini_lite
+
+substitutions:
+  pin_led   : "GPIO2" 
+  pin_a0    : "GPIO2"
+  pin_d0    : "GPIO16"
+  
+  pin_d1    : "GPIO5"
+  pin_scl   : "GPIO5"
+
+  pin_d2    : "GPIO4"
+  pin_dat   : "GPIO4"
+    
+  pin_d3    : "GPIO0"  
+  pin_d4    : "GPIO2"
+  
+  pin_d5    : "GPIO14"
+  pin_sck   : "GPIO14"
+  
+  pin_wake  : "GPIO14"
+  
+  pin_d6    : "GPIO12"
+  pin_miso  : "GPIO12"
+  
+  pin_d7    : "GPIO13"
+  pin_mosi  : "GPIO13"
+  
+  pin_d8    : "GPIO15"
+  pin_ss    : "GPIO15"
+  
+  pin_tx    : "GPIO22"
+  pin_rx    : "GPIO21"
+  
+logger:
+api:
+captive_portal:
+improv_serial:
