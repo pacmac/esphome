@@ -1,0 +1,110 @@
+## http://m5-timercam_cff4.local:8080/
+packages:
+  wifi          : !include inc/wifi.yaml
+  info          : !include inc/info.yaml
+
+substitutions:
+  app        : "m5-timercam"
+  mac         : "cff4"
+
+esphome:
+  name: ${app}_${mac}
+  name_add_mac_suffix: false
+
+esp32:
+  board: m5stack-timer-cam
+  framework:
+    type: arduino
+
+
+psram:
+  
+# wifi:
+#   use_address:  192.168.0.247
+
+logger:
+api:
+captive_portal:
+#web_server:
+
+select:
+  - platform: template
+    name: "Template select"
+    optimistic: true
+    options:
+      - VGA
+      - SVGA
+      - XGA
+      - SXGA
+      - UXGA
+    initial_option: VGA
+
+    on_value:
+      then:
+        - logger.log:
+            format: "Chosen option: %s (index %d)"
+            args: ["x.c_str()", "i"]
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+
+esp32_camera:
+  name: camera-m5
+  external_clock:
+    pin: GPIO27
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO25
+    scl: GPIO23
+  data_pins: [GPIO32, GPIO35, GPIO34, GPIO5, GPIO39, GPIO18, GPIO36, GPIO19]
+  vsync_pin: GPIO22
+  href_pin: GPIO26
+  pixel_clock_pin: GPIO21
+#  resolution: 1024x768
+#  resolution: 1600X1200
+# resolution: 1280x1024
+#  resolution: 640x480
+#  jpeg_quality: 10
+#  contrast: 0
+
+#  saturation: 0
+#  wb_mode: cloudy
+  # max_framerate: 8 fps
+  # idle_framerate: 1 fps
+
+  brightness: 1
+  resolution: VGA
+  vertical_flip: true
+  horizontal_mirror: false
+
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
+
+  - id: camera_led
+    platform: gpio
+    pin: GPIO2
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO37
+    name: "Camera button"
+
+light:
+  - platform: binary
+    name: "Camera LED"
+    output: camera_led
+
+switch:
+  - platform: gpio
+    pin: GPIO33
+    name: "Camera Bat On"
+
+sensor:
+  - platform: adc
+    pin: GPIO38
+    name: "Battery Voltage"
+    filters:
+      multiply: 3.3

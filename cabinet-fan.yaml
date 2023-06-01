@@ -1,0 +1,14 @@
+packages:
+  device        : !include devices/m5stamp.yaml
+  app           : !include apps/cabinet_fan.yaml
+  wifi          : !include inc/wifi.yaml
+  info          : !include inc/info.yaml
+#  ble           : !include inc/ble_proxy.yaml
+
+substitutions:
+  mac           : "a2ac"   ## UK
+#  mac           : "bb20"
+#  mac           : "9548"   ## SG
+
+# wifi:
+#   use_address:  192.168.1.75

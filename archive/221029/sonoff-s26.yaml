@@ -1,0 +1,10 @@
+packages:
+  app: !include apps/sonoff_s26.yaml
+  wifi: !include inc/wifi.yaml
+  info: !include inc/info.yaml
+
+substitutions:
+  mac         : "bb16"
+
+# wifi:
+#   use_address:  192.168.0.213

@@ -1,0 +1,25 @@
+packages:
+  device      : !include devices/d1minilite.yaml
+  wifi        : !include inc/wifi.yaml
+  info        : !include inc/info.yaml
+
+substitutions:
+  mac         :  "d760"
+  app         : "wemos-mini-lite"
+
+esphome:
+  name: ${app}_${mac}
+  on_boot:
+    priority: -100.0
+    then:
+      - delay: 2s
+      - homeassistant.service: 
+          service: script.turn_on
+          data:
+            entity_id: "script.esp_camera"
+
+deep_sleep:
+
+logger:
+api:
+captive_portal:

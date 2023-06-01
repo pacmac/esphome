@@ -1,0 +1,73 @@
+# HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+# RAM:   [=         ]  12.8% (used 41868 bytes from 327680 bytes)
+# Flash: [======    ]  56.1% (used 1029702 bytes from 1835008 bytes)
+# Wrote 0x10b6b0 bytes to file /data/m5stamp-dev_bb20/.pioenvs/m5stamp-dev_bb20/firmware-factory.bin, ready to flash to offset 0x0
+
+packages:
+  device        : !include devices/m5stamp.yaml
+  wifi          : !include inc/wifi.yaml
+  info          : !include inc/info.yaml
+  # blegw         : !include inc/ble_gateway.yaml
+
+substitutions:
+  app: "m5stamp-evolve"
+  mac: "bb20"
+  pin_bled: "GPIO21"
+  pin_relay: "GPIO18"
+  pin_button: "GPIO36"
+
+esphome:
+  name: ${app}_${mac}
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: $pin_button
+      mode:
+        input: true
+      inverted: true
+    name: "Evolve Button"
+ 
+    on_press:
+        - switch.toggle: relay
+        - output.turn_off: evolve_light
+        
+switch:
+  - platform: gpio
+    name: "Evolve Relay"
+    pin: $pin_relay
+    id: relay
+    on_turn_on:
+      - light.turn_on:
+          id: evolve_led
+          effect: none
+          brightness: 100%
+
+    on_turn_off:
+      - light.turn_on:
+          id: evolve_led
+          effect: pulse
+          brightness: 1%
+
+output:
+  # Register the LED as a dimmable output ....
+  - platform: ledc
+    id: evolve_light
+    pin:
+      number: $pin_bled
+      inverted: true
+
+light:
+  # ... and then make a light out of it.
+  - platform: monochromatic
+    # name: "Evolve LED"
+    id: "evolve_led"
+    output: evolve_light
+    # disabled_by_default: true
+    effects:
+      - random:
+      - flicker:
+      - pulse:
+
+# wifi:
+#   use_address:  192.168.0.237

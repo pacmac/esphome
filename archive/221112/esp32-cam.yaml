@@ -1,0 +1,70 @@
+packages:
+  wifi          : !include inc/wifi.yaml
+  info          : !include inc/info.yaml
+
+substitutions:
+  app        : "esp32-cam"
+  mac         : "0af8"
+
+esphome:
+  name: ${app}_${mac}
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32cam
+  framework:
+    type: arduino
+
+api:
+captive_portal:
+logger:
+# improv_serial:
+# esp32_improv:
+#   authorizer: none
+web_server:
+
+# Example configuration entry
+esp32_camera_web_server:
+  - mode: stream
+    port: 8080
+    
+  - mode: snapshot
+    port: 8081
+    
+esp32_camera:
+  external_clock:
+    pin: GPIO0
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+
+  # the order of the data_pins is significant, don't mix up the order
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+  name: esp_cam02
+
+# Image settings
+  max_framerate: 2 fps
+  idle_framerate: 0.2 fps
+  # resolution: 800x600
+  # vertical_flip: false
+  # horizontal_mirror: false
+  # jpeg_quality: 30
+  # contrast: 1
+  # brightness: 0.
+  # saturation: 0.
+
+output:
+  - platform: ledc
+    pin: GPIO4
+    channel: 2 # channel 1 is used for esp32_camera
+    id: led
+light:
+  - platform: monochromatic
+    output: led
+    name: espcam_02 light
+    

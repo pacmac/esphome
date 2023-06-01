@@ -1,0 +1,11 @@
+packages:
+  device: !include devices/athom_smartv2.yaml
+  info: !include inc/info.yaml
+
+substitutions:
+  mac: "862d"
+#  mac: "a5da"
+#  mac: "83b4"
+
+# wifi:
+#   use_address:  192.168.0.213

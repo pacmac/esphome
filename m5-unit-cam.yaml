@@ -1,0 +1,71 @@
+packages:
+  wifi          : !include inc/wifi.yaml
+  info          : !include inc/info.yaml
+
+substitutions:
+  app        : "m5-unit-cam"
+  mac         : "b4cc"
+
+esphome:
+  name: ${app}_${mac}
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# wifi:
+#    use_address:  192.168.0.209
+
+logger:
+api:
+
+select:
+  - platform: template
+    name: "Template select"
+    optimistic: true
+    options:
+      - Low
+      - Med
+      - High
+    initial_option: Low
+
+    on_value:
+      then:
+        - logger.log:
+            format: "Chosen option: %s (index %d)"
+            args: ["x.c_str()", "i"]
+
+esp32_camera:
+  name: "${name}"
+  external_clock:
+    pin: GPIO27
+    frequency: 20MHz
+    
+  i2c_pins:
+    sda: GPIO25
+    scl: GPIO23
+
+  data_pins: [GPIO32, GPIO35, GPIO34, GPIO5, GPIO39, GPIO18, GPIO36, GPIO19]
+  vsync_pin: GPIO22
+  href_pin: GPIO26
+  pixel_clock_pin: GPIO21
+  reset_pin: GPIO15
+
+# Image settings
+  # max_framerate: 5 fps
+  #idle_framerate: 0.2 fps
+  resolution: SVGA
+
+  # vertical_flip: true
+  # horizontal_mirror: false
+  # jpeg_quality: 30
+  # contrast: 1
+  # brightness: 0.
+  # saturation: 0.
+
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream

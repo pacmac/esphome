@@ -1,0 +1,95 @@
+## Sometimes Needs Clean Builds
+# HARDWARE: ESP32C3 160MHz, 320KB RAM, 4MB Flash
+# RAM:   [=         ]  11.4% (used 37208 bytes from 327680 bytes)
+# Flash: [=====     ]  49.3% (used 904278 bytes from 1835008 bytes)
+# esp32_create_combined_bin(["/data/qtpy-dev_fd8c/.pioenvs/qtpy-dev_fd8c/firmware.bin"], ["/data/qtpy-dev_fd8c/.pioenvs/qtpy-dev_fd8c/firmware.elf"])
+# Flash params set to 0x022f
+# Wrote 0xedf90 bytes to file /data/qtpy-dev_fd8c/.pioenvs/qtpy-dev_fd8c/firmware-factory.bin, ready to flash to offset 0x0
+
+packages:
+  device    : !include devices/qtpy-arduino.yaml
+  info      : !include inc/info.yaml
+  wifi      : !include inc/wifi.yaml
+  # ble       : !include inc/ble_proxy.yaml
+  #blegw     : !include inc/ble_gateway.yaml
+  # fonts     : !include inc/fonts.yaml
+
+substitutions:
+  mac: "fd8c"
+  app: "qtpy-dev"
+  
+esphome:
+  name: ${app}_${mac}
+  on_boot:
+    light.turn_off:
+      id: led_neo
+  #     effect: pulse
+  #     brightness: 1%
+  #     red: 0%
+  #     green: 100%
+  #     blue: 0%
+
+# wifi:
+#   use_address:  192.168.0.227
+
+# Example configuration entry
+remote_transmitter:
+  pin: $pin_scl
+  carrier_duty_percent: 50%
+
+
+# ## Hack
+# external_components:
+#   - source: github://Jorre05/remote_receiver
+#     components: [ remote_receiver ]
+
+# remote_receiver:
+#   pin: 
+#     number: $pin_rx
+#     inverted: true
+#   dump: all
+#   rmt_channel: 2
+#   filter: 100us
+
+# Individual switches
+switch:
+  - platform: template
+    name: "Vol -"
+    turn_on_action:
+      - remote_transmitter.transmit_pronto:
+          data: "0000 006D 000D 0000 0026 001E 0046 001E 000A 001A 0055 000F 0028 001E 0023 0021 0028 001C 0025 0041 0047 001F 0025 001F 0028 001C 0030 001A 0008 06C3"
+          repeat:
+            times: 2
+            wait_time: 100ms
+
+  # - platform: template
+  #   name: "Vol +"
+  #   turn_on_action:
+  #     - remote_transmitter.transmit_pronto:
+  #         data: "0000 006D 000E 0000 0003 0070 0026 001E 0026 0019 0037 0012 0048 001E 0029 000B 0037 001C 002A 001A 002A 0023 0007 0015 004A 001C 0027 0014 0031 001C 0025 06C3"
+
+# font:
+#   - file: "gfonts://Roboto"
+#     id: roboto_20
+#     size: 20
+
+#   - file: "gfonts://Roboto"
+#     id: roboto_10
+#     size: 10
+
+# display:
+#   - <<: !include inc/ssd1306.yaml
+#     # model: "SSD1306 128x64"
+#     model: "SSD1306 128x32"
+#     # lambda: |-
+#     #   it.line(0,0,127,0);
+#     #   it.line(0,63,0,0);
+#     #   it.line(127,0,127,63);
+#     #   it.line(0,63,127,63);
+#     #   it.print(2,2, id(sans_s), "Hello World!");
+#     lambda: |-
+#       it.line(0,0,127,0);
+#       it.line(0,31,0,0);
+#       it.line(127,0,127,31);
+#       it.line(0,31,127,31);
+#       it.print(2,2, id(sans_s), "Hello World!");
