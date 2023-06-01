@@ -1,8 +1,3 @@
-substitutions:
-  mac         : "0000"
-  name        : "tiny-pico"
-  address     : "${name}_${mac}.local"
-  
 esphome:
   name: ${name}
   name_add_mac_suffix: false

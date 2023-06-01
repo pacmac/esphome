@@ -1,6 +1,6 @@
 substitutions:
   refresh: "30s"
-  name: "esp32"
+#   name: "esp32"
 
 button:
 - platform: safe_mode

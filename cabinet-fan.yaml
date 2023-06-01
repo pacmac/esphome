@@ -1,7 +1,7 @@
 packages:
   device        : !include devices/m5stamp.yaml
   app           : !include apps/cabinet_fan.yaml
-  wifi          : !include inc/wifi.yaml
+  wifi          : !include pri/wifi.yaml
   info          : !include inc/info.yaml
 #  ble           : !include inc/ble_proxy.yaml
 
