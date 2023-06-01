@@ -1,0 +1,52 @@
+substitutions:
+  mac         : "bb16"
+  app         : "sonoff-s26"
+
+esphome:
+  name: "${app}_${mac}"
+
+esp8266:
+  board: sonoff_basic
+
+logger:
+api:
+improv_serial:
+captive_portal:
+# web_server:
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    name: "Sonoff S26 Button"
+ 
+    on_press:
+        - switch.toggle: relay
+        
+  - platform: gpio
+    pin: GPIO2
+    name: "Sonoff S26 Sensor"
+
+switch:
+  - platform: gpio
+    name: "Sonoff S26 Relay"
+    pin: GPIO12
+    id: relay
+
+output:
+  # Register the green LED as a dimmable output ....
+  - platform: esp8266_pwm
+    id: s26_green_led
+    pin:
+      number: GPIO13
+      inverted: true
+
+light:
+  # ... and then make a light out of it.
+  - platform: monochromatic
+    name: "Sonoff S26 Green LED"
+    output: s26_green_led

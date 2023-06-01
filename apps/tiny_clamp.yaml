@@ -1,0 +1,158 @@
+packages:
+  device    : !include ../devices/tinypico.yaml
+
+substitutions:
+  app         : "tinyclampd"
+  mac         : "6f74"    #SG
+  #mac         : "70d8"   #UK
+  
+  name        : "${app}_${mac}"
+  clamp_id    : "${name}_current"
+  power_id    : "${name}_power"
+  energy_id   : "${name}_daily_energy"
+  ble_id      : "${name}_ble_devs"
+  top         : "2"
+  center      : "20"
+  bottom      : "57"
+  update      : "60s"
+
+time:
+  - platform: sntp
+    id: my_time
+
+sensor:
+  # - platform: wifi_signal
+  #   id: wifi_sig
+  #   name: Signal
+  #   update_interval: 60s
+
+  ## CURRENT
+  - platform: ct_clamp
+    sensor: adc_sensor
+    name: "${name} Clamp"
+    id: $clamp_id
+    update_interval: $update
+    filters:
+    - calibrate_linear:
+      - 0 -> 0
+      - 0.0090 ->  0.25
+      - 0.2964 -> 16.6
+
+  - platform: adc
+    pin: 32
+    id: adc_sensor
+    attenuation: 11db
+
+  ## CURRENT POWER
+  - platform: template
+    name: "${name} Power"
+    id: $power_id
+    unit_of_measurement: kW
+    lambda: return id($clamp_id).state * 230 / 1000;
+    update_interval: $update
+    accuracy_decimals: 2
+
+  ## DAILY ENERGY
+  - platform: total_daily_energy
+    id: $energy_id
+    name: "${name} Daily Energy"
+    power_id: $power_id
+    unit_of_measurement: kWh
+    accuracy_decimals: 3
+    icon: mdi:clock-alert
+    device_class: energy
+
+spi:
+  clk_pin: GPIO18
+  mosi_pin: GPIO23
+  miso_pin: GPIO19
+
+font:
+  - file: "fonts/DejaVuSans.ttf"
+    id: sans_s
+    size: 20
+    glyphs: [0,1,2,3,4,5,6,7,8,9,".","-"," ",":","K","W","H","%"]
+
+  - file: "fonts/DejaVuSans.ttf"
+    id: sans_l
+    size: 30
+    glyphs: [0,1,2,3,4,5,6,7,8,9,".","-"," ","%"]
+
+  - file: 'fonts/material/fonts/materialdesignicons-webfont.ttf'
+    id: mdi
+    size: 20
+    glyphs:
+      - "\U000F060A" # mdi-signal-variant
+      - "\U000F0954" # mdi-clock
+
+display:
+  - platform: st7735
+    model: "INITR_MINI160X80"
+#    reset_pin: 0
+    cs_pin: GPIO5
+    dc_pin: GPIO15
+    rotation: 90
+    device_width: 80
+    device_height: 160
+    col_start: 0
+    row_start: 0
+    eight_bit_color: true
+    update_interval: $update
+    auto_clear_enabled: true
+
+    invert_colors: true
+    use_bgr: true
+  
+    lambda: |-
+
+      auto red = Color(255, 0, 0);
+      auto green = Color(0,255,0);
+      auto blue = Color(0, 0, 255);
+      auto white = Color(0, 0, 0);
+      auto black = Color(255,255,255);
+    
+      //it.fill(black);
+
+      // TOP
+      it.line(80,0,80,$bottom -2);
+      it.printf(8,$top, id(sans_s),green,"KW");
+
+      // Power KW
+      int kw = id($power_id).state;
+
+      if(isnan(id($power_id).state)) {
+        it.printf(8,$center, id(sans_l)," ----");
+      } else if (id($power_id).state < 10) {
+        it.printf(8,$center, id(sans_l),"%.2f", id($power_id).state);
+      } else if (id($power_id).state < 99) {
+        it.printf(8,$center, id(sans_l),"%.1f", id($power_id).state);
+      } else {
+        it.printf(8,$center, id(sans_l),"%.0f", id($power_id).state);
+      }
+
+      // Energy KWH
+      int kwh = id($energy_id).state;
+      it.printf(88,$top, id(sans_s),green,"KWH");
+      //it.printf(88,$center, id(sans_l),"%.1f", id($energy_id).state);
+
+      if(isnan(id($power_id).state)) {
+        it.printf(88,$center, id(sans_l)," ----");
+      } else if (id($energy_id).state < 10) {
+        it.printf(88,$center, id(sans_l),"%.2f", id($energy_id).state);
+      } else if (id($energy_id).state < 99) {
+        it.printf(88,$center, id(sans_l),"%.1f", id($energy_id).state);
+      } else {
+        it.printf(88,$center, id(sans_l),"%.0f", id($energy_id).state);
+      }
+
+      // BOTTOM
+      it.line(0, $bottom -2, 180, $bottom -2);
+      
+      it.print(1,$bottom, id(mdi), blue, TextAlign::LEFT, "\U000F0954");
+      it.strftime(24,$bottom, id(sans_s), TextAlign::LEFT, "%H:%M", id(my_time).now());
+      
+      it.print(100,$bottom, id(mdi), blue,TextAlign::LEFT, "\U000F060A");
+      // it.printf(130,$bottom, id(sans_s), "%.0f", (id(wifi_sig).state)+101);
+      it.printf(122,$bottom, id(sans_s), id(wifi_bars).state.c_str() );
+      
+      
