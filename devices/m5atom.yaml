@@ -53,31 +53,6 @@ light:
       - pulse:
       - addressable_rainbow:
 
-dallas:
-  - pin: $con_3
-    update_interval: 5s
-
-sensor:
-  - platform: dallas
-    name: ${name} Temp D128
-    address: "0xb5000008aa7ed128"
-    internal: false
-
-  - platform: dallas
-    name: ${name} Temp 7028
-    address: "0x60000008acee7028"
-    internal: false
-
-    on_value:
-      then:
-        - light.turn_on:
-            id: status_led
-            effect: pulse
-            brightness: 50%
-            red: 100%
-            green: 0%
-            blue: 0%
-
 binary_sensor:
   - platform: gpio
     pin:
