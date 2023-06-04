@@ -1,0 +1,103 @@
+substitutions:
+  mac         : "3300"
+  app         : "m5_atom"
+  name        : ${app}_${mac}
+
+  pin_ir      : "GPIO12"
+  pin_led     : "GPIO27"
+  pin_button  : "GPIO39"
+
+  pin_g22     : "GPIO22"
+  pin_mosi    : "GPIO19"
+  pin_clk     : "GPIO23"
+  pin_miso    : "GPIO33"
+  
+  pin_sda     : "GPIO25"
+  pin_scl     : "GPIO21"
+
+  # GROVE CONNECTOR
+  con_1       : "0V" 
+  con_2       : "5V" 
+  con_3       : "GPIO26" 
+  con_4       : "GPIO32"
+
+esphome:
+  name: $name
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+api:
+captive_portal:
+web_server:
+
+output:
+  - platform: gpio
+    pin: $con_4
+    id: bus_con
+
+light:
+
+  - platform: fastled_clockless
+    chipset: WS2812B
+    pin: $pin_led
+    num_leds: 1
+    rgb_order: GRB
+    id: status_led
+    effects:
+      - random:
+      - flicker:
+      - pulse:
+      - addressable_rainbow:
+
+dallas:
+  - pin: $con_3
+    update_interval: 5s
+
+sensor:
+  - platform: dallas
+    name: ${name} Temp D128
+    address: "0xb5000008aa7ed128"
+    internal: false
+
+  - platform: dallas
+    name: ${name} Temp 7028
+    address: "0x60000008acee7028"
+    internal: false
+
+    on_value:
+      then:
+        - light.turn_on:
+            id: status_led
+            effect: pulse
+            brightness: 50%
+            red: 100%
+            green: 0%
+            blue: 0%
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: $pin_button
+      inverted: true
+    name: ${name} Button
+    on_press:
+      then:
+        - light.toggle: status_led
+
+# remote_transmitter:
+#   pin: $pin_ir
+#   carrier_duty_percent: 50%
+
+# switch:
+#   - platform: template
+#     name: "Vol -"
+#     turn_on_action:
+#       - remote_transmitter.transmit_pronto:
+#           data: "0000 006D 000D 0000 0026 001E 0046 001E 000A 001A 0055 000F 0028 001E 0023 0021 0028 001C 0025 0041 0047 001F 0025 001F 0028 001C 0030 001A 0008 06C3"
+#           repeat:
+#             times: 2
+#             wait_time: 100ms
