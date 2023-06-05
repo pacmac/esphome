@@ -53,15 +53,15 @@ light:
       - pulse:
       - addressable_rainbow:
 
-binary_sensor:
-  - platform: gpio
-    pin:
-      number: $pin_button
-      inverted: true
-    name: ${name} Button
-    on_press:
-      then:
-        - light.toggle: status_led
+# binary_sensor:
+#   - platform: gpio
+#     pin:
+#       number: $pin_button
+#       inverted: true
+#     name: ${name} Button
+#     on_press:
+#       then:
+#         - light.toggle: status_led
 
 # remote_transmitter:
 #   pin: $pin_ir
