@@ -9,11 +9,19 @@ substitutions:
 
   pin_g22     : "GPIO22"
   pin_mosi    : "GPIO19"
+  pin_g19     : "GPIO19"
+  
   pin_clk     : "GPIO23"
+  pin_g23     : "GPIO23"
+  
   pin_miso    : "GPIO33"
+  pin_g33     : "GPIO33"
   
   pin_sda     : "GPIO25"
+  pin_g25     : "GPIO25"
+  
   pin_scl     : "GPIO21"
+  pin_g21     : "GPIO21"
 
   # GROVE CONNECTOR
   con_1       : "0V" 
@@ -25,7 +33,7 @@ esphome:
   name: $name
 
 esp32:
-  board: esp32dev
+  board: m5stack-atom
   framework:
     type: arduino
 
