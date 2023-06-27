@@ -49,6 +49,7 @@ spi:
   mosi_pin: GPIO21
 
 display:
+  # GC9107
   - platform: st7789v
     model: Custom
     width: 128
@@ -57,7 +58,7 @@ display:
     offset_height: 0
     backlight_pin: GPIO16
     cs_pin: GPIO15
-    dc_pin: GPIO6
+    dc_pin: GPIO33
     reset_pin: GPIO34
     id: disp
     rotation: 180
