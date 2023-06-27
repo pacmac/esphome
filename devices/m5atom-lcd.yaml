@@ -64,15 +64,15 @@ display:
     id: disp
     eightbitcolor: true
     rotation: 180
-    lambda: |-
-      it.strftime(0, 0, id(fontocra), TextAlign::TOP_LEFT, "%H:%M", id(home_time).now());
-      it.line(0, 50, 128, 50);
+#     lambda: |-
+#       it.strftime(0, 0, id(fontocra), TextAlign::TOP_LEFT, "%H:%M", id(home_time).now());
+#       it.line(0, 50, 128, 50);
 
 font:
   - file: "fonts/OCRAEXT.ttf"
     id: fontocra
     size: 42
-
+    
 time:
   - platform: homeassistant
     id: home_time
