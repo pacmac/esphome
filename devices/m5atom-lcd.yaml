@@ -50,28 +50,28 @@ spi:
   clk_pin: GPIO17
   mosi_pin: GPIO21
 
-display:
-  # GC9107
-  - platform: st7789v
-    model: Custom
-    width: 128
-    height: 128
-    offset_width: 1
-    offset_height: 2
-    cs_pin: GPIO15
-    dc_pin: GPIO33
-    reset_pin: GPIO34
+# display:
+#   # GC9107
+#   - platform: st7789v
+#     model: Custom
+#     width: 128
+#     height: 128
+#     offset_width: 1
+#     offset_height: 2
+#     cs_pin: GPIO15
+#     dc_pin: GPIO33
+#     reset_pin: GPIO34
 #     id: disp
-    eightbitcolor: true
-    rotation: 180
+#     eightbitcolor: true
+#     rotation: 180
 #     lambda: |-
 #       it.strftime(0, 0, id(fontocra), TextAlign::TOP_LEFT, "%H:%M", id(home_time).now());
 #       it.line(0, 50, 128, 50);
-
-font:
-  - file: "fonts/OCRAEXT.ttf"
-    id: fontocra
-    size: 42
+# 
+# font:
+#   - file: "fonts/OCRAEXT.ttf"
+#     id: fontocra
+#     size: 42
     
 time:
   - platform: homeassistant
