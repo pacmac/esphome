@@ -78,6 +78,33 @@ time:
     id: home_time
     timezone: Asia/Singapore
 
+sensor:
+  - platform: mpu6886
+    address: 0x68
+    accel_x:
+      name: "$device_name MPU6886 Accel X"
+    accel_y:
+      name: "$device_name MPU6886 Accel Y"
+    accel_z:
+      name: "$device_name MPU6886 Accel z"
+    gyro_x:
+      name: "$device_name MPU6886 Gyro X"
+    gyro_y:
+      name: "$device_name MPU6886 Gyro Y"
+    gyro_z:
+      name: "$device_name MPU6886 Gyro z"
+    temperature:
+      name: "$device_name MPU6886 Temperature"
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO41
+    name: "${name}_button"
+    id: "${name}_button"
+    on_press:
+      then:
+        - switch.toggle: ${name}_backlight
+
 # binary_sensor:
 #   - platform: gpio
 #     pin:
