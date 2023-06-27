@@ -1,0 +1,103 @@
+substitutions:
+  mac         : "3300"
+  app         : "m5_atom_lcd"
+  name        : ${app}_${mac}
+
+  pin_ir      : "GPIO4"
+  pin_button  : "GPIO41"
+
+  ## LEFT
+  pin_2     : "GPIO5"
+  pin_3     : "GPIO6"
+  pin_4     : "GPIO7"
+  pin_5     : "GPIO8"
+
+  ## RIGHT
+  pin_8     : "GPIO38"
+  pin_sda   : "GPIO38"
+  pin_9     : "GPIO39"  
+  pin_scl   : "GPIO39"
+  
+  # GROVE CONNECTOR
+  con_1       : "0V" 
+  con_2       : "5V" 
+  con_3       : "GPIO2" 
+  con_4       : "GPIO1"
+
+esphome:
+  name: $name
+
+esp32:
+  board: m5stack-atom
+  framework:
+    type: arduino
+
+logger:
+api:
+captive_portal:
+web_server:
+
+spi:
+  clk_pin: GPIO17
+  mosi_pin: GPIO21
+
+display:
+  - platform: st7789v
+    model: Custom
+    width: 128
+    height: 128
+    offset_width: 0
+    offset_height: 0
+    backlight_pin: GPIO16
+    cs_pin: GPIO15
+    dc_pin: GPIO6
+    reset_pin: GPIO34
+    id: disp
+    rotation: 180
+    lambda: |-
+      it.strftime(0, 0, id(fontocra), TextAlign::TOP_LEFT, "%H:%M", id(home_time).now());
+      it.line(0, 50, 128, 50);
+
+font:
+  - file: "fonts/OCRAEXT.ttf"
+    id: fontocra
+    size: 42
+
+switch:
+  - platform: gpio
+    pin:
+      number: GPIO16
+      mode:
+        output: True
+    name: "Display Backlight"
+    id: backlight
+    entity_category: diagnostic
+
+time:
+  - platform: homeassistant
+    id: home_time
+    timezone: Asia/Singapore
+
+# binary_sensor:
+#   - platform: gpio
+#     pin:
+#       number: $pin_button
+#       inverted: true
+#     name: ${name} Button
+#     on_press:
+#       then:
+#         - light.toggle: status_led
+
+# remote_transmitter:
+#   pin: $pin_ir
+#   carrier_duty_percent: 50%
+
+# switch:
+#   - platform: template
+#     name: "Vol -"
+#     turn_on_action:
+#       - remote_transmitter.transmit_pronto:
+#           data: "0000 006D 000D 0000 0026 001E 0046 001E 000A 001A 0055 000F 0028 001E 0023 0021 0028 001C 0025 0041 0047 001F 0025 001F 0028 001C 0030 001A 0008 06C3"
+#           repeat:
+#             times: 2
+#             wait_time: 100ms
