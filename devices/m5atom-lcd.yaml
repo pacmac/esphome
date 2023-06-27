@@ -38,16 +38,13 @@ api:
 captive_portal:
 web_server:
 
-output:
-  - platform: ledc
-    pin: GPIO16
-    inverted: true
-    id: backlightdim
-
-light:
-  - platform: monochromatic
-    output: backlightdim
-    name: "Backlight"
+switch:
+- id: ${name}_backlight
+  name: ${name}_backlight
+  platform: gpio
+  pin: GPIO16
+  restore_mode: RESTORE_DEFAULT_ON
+  icon: mdi:lightbulb
 
 spi:
   clk_pin: GPIO17
@@ -59,13 +56,13 @@ display:
     model: Custom
     width: 128
     height: 128
-    offset_width: 0
-    offset_height: 0
-#     backlight_pin: GPIO16
+    offset_width: 1
+    offset_height: 2
     cs_pin: GPIO15
     dc_pin: GPIO33
     reset_pin: GPIO34
     id: disp
+    eightbitcolor: true
     rotation: 180
     lambda: |-
       it.strftime(0, 0, id(fontocra), TextAlign::TOP_LEFT, "%H:%M", id(home_time).now());
