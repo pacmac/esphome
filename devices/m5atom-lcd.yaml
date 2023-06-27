@@ -78,6 +78,11 @@ time:
     id: home_time
     timezone: Asia/Singapore
 
+i2c:
+  - id: bus_a
+    sda: GPIO38
+    scl: GPIO39
+
 sensor:
   - platform: mpu6886
     address: 0x68
