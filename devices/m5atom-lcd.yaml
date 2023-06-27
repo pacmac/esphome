@@ -61,7 +61,7 @@ display:
     cs_pin: GPIO15
     dc_pin: GPIO33
     reset_pin: GPIO34
-    id: disp
+#     id: disp
     eightbitcolor: true
     rotation: 180
 #     lambda: |-
