@@ -39,12 +39,12 @@ captive_portal:
 web_server:
 
 switch:
-- id: ${name}_backlight
-  name: ${name}_backlight
-  platform: gpio
-  pin: GPIO16
-  restore_mode: RESTORE_DEFAULT_ON
-  icon: mdi:lightbulb
+  - id: ${name}_backlight
+    name: ${name}_backlight
+    platform: gpio
+    pin: GPIO16
+    restore_mode: RESTORE_DEFAULT_ON
+    icon: mdi:lightbulb
 
 spi:
   clk_pin: GPIO17
