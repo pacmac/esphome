@@ -88,19 +88,19 @@ sensor:
   - platform: mpu6886
     address: 0x68
     accel_x:
-      name: "$device_name MPU6886 Accel X"
+      name: "$name MPU6886 Accel X"
     accel_y:
-      name: "$device_name MPU6886 Accel Y"
+      name: "$name MPU6886 Accel Y"
     accel_z:
-      name: "$device_name MPU6886 Accel z"
+      name: "$name MPU6886 Accel z"
     gyro_x:
-      name: "$device_name MPU6886 Gyro X"
+      name: "$name MPU6886 Gyro X"
     gyro_y:
-      name: "$device_name MPU6886 Gyro Y"
+      name: "$name MPU6886 Gyro Y"
     gyro_z:
-      name: "$device_name MPU6886 Gyro z"
+      name: "$name MPU6886 Gyro z"
     temperature:
-      name: "$device_name MPU6886 Temperature"
+      name: "$name MPU6886 Temperature"
 
 binary_sensor:
   - platform: gpio
