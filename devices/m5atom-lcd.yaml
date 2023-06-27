@@ -27,12 +27,6 @@ substitutions:
 esphome:
   name: $name
 
-# esp32:
-#   board: m5stack-atom
-#   variant: esp32s3
-#   framework:
-#     type: arduino
-
 esp32:
   board: esp32-s3-devkitc-1
   variant: esp32s3
@@ -43,6 +37,17 @@ logger:
 api:
 captive_portal:
 web_server:
+
+output:
+  - platform: ledc
+    pin: GPIO16
+    inverted: true
+    id: backlightdim
+
+light:
+  - platform: monochromatic
+    output: backlightdim
+    name: "Backlight"
 
 spi:
   clk_pin: GPIO17
@@ -56,7 +61,7 @@ display:
     height: 128
     offset_width: 0
     offset_height: 0
-    backlight_pin: GPIO16
+#     backlight_pin: GPIO16
     cs_pin: GPIO15
     dc_pin: GPIO33
     reset_pin: GPIO34
