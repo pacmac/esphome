@@ -73,16 +73,6 @@ font:
     id: fontocra
     size: 42
 
-switch:
-  - platform: gpio
-    pin:
-      number: GPIO16
-      mode:
-        output: True
-    name: "Display Backlight"
-    id: backlight
-    entity_category: diagnostic
-
 time:
   - platform: homeassistant
     id: home_time
