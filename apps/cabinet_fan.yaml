@@ -36,11 +36,11 @@ esphome:
 dallas:
   - pin: $pin_dallas
     
-# globals:
-#   - id: dhttemp
-#     type: float
-#     restore_value: yes
-#     initial_value: '0'
+globals:
+  - id: last_value
+    type: float
+    restore_value: yes
+    initial_value: "0.0"
  
 # pid climate log update is noisy, dial it back to warn
 logger:
@@ -106,10 +106,16 @@ sensor:
     index: 0
     unit_of_measurement: "°C"
     accuracy_decimals: 2
+#     filters:
+#       - exponential_moving_average:  
+#          alpha: 0.1
+#          send_every: 1
+
     filters:
-      - exponential_moving_average:  
-         alpha: 0.1
-         send_every: 1
+      - lambda: |-
+          if (isnan(x) || x==85.0) return id(last_value);
+          id(last_value) = x;
+          return id(last_value);
 
     on_value:
       then:
