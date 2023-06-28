@@ -1,0 +1,68 @@
+substitutions:
+  pin_1          : "GPIO1"
+  pin_2          : "GPIO3"
+  pin_3          : "GPIO5"
+  pin_4          : "GPIO7" 
+  pin_5          : "GPIO9"
+  pin_6          : "0V"
+  pin_7          : "5V"
+  pin_8          : "GPIO13" 
+  pin_9          : "GPIO15"
+
+  pin_10          : "0V"
+  pin_11          : "GPIO0"
+  pin_12          : "EN"
+  pin_13          : "GPIO44"
+  pin_14          : "GPIO43"
+  pin_15          : "5V"
+
+  con_1           : "0V"
+  con_2           : "5V"  
+  con_3           : "GPIO13"
+  con_4           : "GPIO15"
+
+  pin_but         : "GPIO3"
+  pin_led         : "GPIO2"
+
+i2c:
+  - id: bus_a
+    sda: $pin_8
+    scl: $pin_9
+
+esphome:
+  name: stamp-s3
+  friendly_name: Stamp S3 Sandbox
+  name_add_mac_suffix: true
+  comment: "M5 Stack Stamp S3"
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: arduino
+  variant: esp32s3
+
+wifi:
+  use_address: "192.168.0.141"
+
+logger:
+api:
+  reboot_timeout: 0s
+ota:
+captive_portal:
+
+binary_sensor:
+  - platform: gpio
+    pin: $pin_but
+    name: "M5 Button"
+
+light:
+  - platform: neopixelbus
+    id: m5led
+    type: GRB
+    variant: SK6812
+    method: ESP32_RMT_1
+    num_leds: 1
+    pin: $pin_led
+    name: "M5 Led"
+
+    
