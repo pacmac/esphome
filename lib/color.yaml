@@ -4,17 +4,17 @@ color:
     green: 0%
     blue: 0%
   - id: dark_gray
-    red: 25%
-    green: 25%
-    blue: 25%
+    red: 20%
+    green: 20%
+    blue: 20%
   - id: gray
     red: 50%
     green: 50%
     blue: 50%
   - id: light_gray
-    red: 75%
-    green: 75%
-    blue: 75%
+    red: 70%
+    green: 70%
+    blue: 70%
   - id: white
     red: 100%
     green: 100%
@@ -29,15 +29,15 @@ color:
     blue: 0%
   - id: dark_orange
     red: 100%
-    green: 50%
+    green: 40%
     blue: 0%
   - id: orange
     red: 100%
-    green: 75%
+    green: 60%
     blue: 0%
   - id: gold
     red: 100%
-    green: 85%
+    green: 70%
     blue: 0%
   - id: dark_yellow
     red: 100%
@@ -80,21 +80,21 @@ color:
     green: 0%
     blue: 100%
   - id: indigo
-    red: 75%
+    red: 70%
     green: 0%
-    blue: 130%
+    blue: 100%
   - id: light_indigo
     red: 90%
     green: 0%
-    blue: 160%
+    blue: 100%
   - id: dark_violet
     red: 50%
     green: 0%
     blue: 50%
   - id: violet
-    red: 75%
+    red: 70%
     green: 0%
-    blue: 75%
+    blue: 70%
   - id: light_violet
     red: 90%
     green: 0%
