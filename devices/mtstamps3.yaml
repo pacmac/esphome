@@ -1,4 +1,7 @@
 substitutions:
+
+  name           : "stamp-s3"
+
   pin_1          : "GPIO1"
   pin_2          : "GPIO3"
   pin_3          : "GPIO5"
@@ -30,7 +33,7 @@ i2c:
     scl: $pin_9
 
 esphome:
-  name: stamp-s3
+  name: $name 
   friendly_name: Stamp S3 Sandbox
   name_add_mac_suffix: true
   comment: "M5 Stack Stamp S3"
@@ -50,16 +53,18 @@ captive_portal:
 binary_sensor:
   - platform: gpio
     pin: $pin_but
+    id: button
     name: "M5 Button"
 
 light:
   - platform: neopixelbus
-    id: m5led
+    id: led
+    name: "LED"
     type: GRB
     variant: SK6812
     method: ESP32_RMT_1
     num_leds: 1
     pin: $pin_led
-    name: "M5 Led"
+
 
     
