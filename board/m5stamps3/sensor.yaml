@@ -1,0 +1,5 @@
+binary_sensor:
+  - platform: gpio
+    pin: $pin_but
+    id: but
+    name: "M5 Button"

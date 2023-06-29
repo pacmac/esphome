@@ -1,0 +1,15 @@
+binary_sensor:
+  - platform: gpio
+    pin: $pin_but
+    id: but
+    name: "M5 Button"
+
+light:
+  - platform: neopixelbus
+    id: led
+    name: "LED"
+    type: GRB
+    variant: SK6812
+    method: ESP32_RMT_1
+    num_leds: 1
+    pin: $pin_led
