@@ -20,28 +20,56 @@ color:
     green: 100%
     blue: 100%
   - id: dark_red
-    red: 50%
+    red: 30%
     green: 0%
     blue: 0%
   - id: red
+    red: 60%
+    green: 0%
+    blue: 0%
+  - id: light_red
     red: 100%
     green: 0%
     blue: 0%
+  - id: dark_green
+    red: 0%
+    green: 30%
+    blue: 0%
+  - id: green
+    red: 0%
+    green: 60%
+    blue: 0%
+  - id: light_green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: dark_blue
+    red: 0%
+    green: 0%
+    blue: 30%
+  - id: blue
+    red: 0%
+    green: 0%
+    blue: 60%
+  - id: light_blue
+    red: 0%
+    green: 0%
+    blue: 100%
   - id: dark_orange
-    red: 100%
-    green: 40%
+    red: 60%
+    green: 30%
     blue: 0%
   - id: orange
     red: 100%
-    green: 60%
+    green: 50%
     blue: 0%
-  - id: gold
-    red: 100%
-    green: 70%
-    blue: 0%
-  - id: dark_yellow
+  - id: light_orange
     red: 100%
     green: 80%
+    blue: 0%
+  - id: dark_yellow
+    red: 60%
+    green: 60%
     blue: 0%
   - id: yellow
     red: 100%
@@ -50,52 +78,4 @@ color:
   - id: light_yellow
     red: 100%
     green: 100%
-    blue: 20%
-  - id: dark_green
-    red: 0%
-    green: 50%
-    blue: 0%
-  - id: green
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: light_green
-    red: 0%
-    green: 100%
-    blue: 20%
-  - id: dark_blue
-    red: 0%
-    green: 0%
-    blue: 50%
-  - id: blue
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: light_blue
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: dark_indigo
-    red: 50%
-    green: 0%
-    blue: 100%
-  - id: indigo
-    red: 70%
-    green: 0%
-    blue: 100%
-  - id: light_indigo
-    red: 90%
-    green: 0%
-    blue: 100%
-  - id: dark_violet
-    red: 50%
-    green: 0%
-    blue: 50%
-  - id: violet
-    red: 70%
-    green: 0%
-    blue: 70%
-  - id: light_violet
-    red: 90%
-    green: 0%
-    blue: 90%
+    blue: 30%
