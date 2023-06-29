@@ -1,0 +1,101 @@
+color:
+  - id: black
+    red: 0%
+    green: 0%
+    blue: 0%
+  - id: dark_gray
+    red: 25%
+    green: 25%
+    blue: 25%
+  - id: gray
+    red: 50%
+    green: 50%
+    blue: 50%
+  - id: light_gray
+    red: 75%
+    green: 75%
+    blue: 75%
+  - id: white
+    red: 100%
+    green: 100%
+    blue: 100%
+  - id: dark_red
+    red: 50%
+    green: 0%
+    blue: 0%
+  - id: red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: dark_orange
+    red: 100%
+    green: 50%
+    blue: 0%
+  - id: orange
+    red: 100%
+    green: 75%
+    blue: 0%
+  - id: gold
+    red: 100%
+    green: 85%
+    blue: 0%
+  - id: dark_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: light_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: dark_green
+    red: 0%
+    green: 50%
+    blue: 0%
+  - id: green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: light_green
+    red: 0%
+    green: 150%
+    blue: 0%
+  - id: dark_blue
+    red: 0%
+    green: 0%
+    blue: 50%
+  - id: blue
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: light_blue
+    red: 0%
+    green: 0%
+    blue: 150%
+  - id: dark_indigo
+    red: 50%
+    green: 0%
+    blue: 100%
+  - id: indigo
+    red: 75%
+    green: 0%
+    blue: 130%
+  - id: light_indigo
+    red: 90%
+    green: 0%
+    blue: 160%
+  - id: dark_violet
+    red: 50%
+    green: 0%
+    blue: 50%
+  - id: violet
+    red: 75%
+    green: 0%
+    blue: 75%
+  - id: light_violet
+    red: 90%
+    green: 0%
+    blue: 90%
