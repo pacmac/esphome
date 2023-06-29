@@ -1,0 +1,65 @@
+color:
+  - id: black
+    red: 0%
+    green: 0%
+    blue: 0%
+  - id: white
+    red: 100%
+    green: 100%
+    blue: 100%
+  - id: red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: lime
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: blue
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: cyan
+    red: 0%
+    green: 100%
+    blue: 100%
+  - id: magenta
+    red: 100%
+    green: 0%
+    blue: 100%
+  - id: silver
+    red: 75.29%
+    green: 75.29%
+    blue: 75.29%
+  - id: gray
+    red: 50.2%
+    green: 50.2%
+    blue: 50.2%
+  - id: maroon
+    red: 50.2%
+    green: 0%
+    blue: 0%
+  - id: olive
+    red: 50.2%
+    green: 50.2%
+    blue: 0%
+  - id: green
+    red: 0%
+    green: 50.2%
+    blue: 0%
+  - id: purple
+    red: 50.2%
+    green: 0%
+    blue: 50.2%
+  - id: teal
+    red: 0%
+    green: 50.2%
+    blue: 50.2%
+  - id: navy
+    red: 0%
+    green: 0%
+    blue: 50.2%
