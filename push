@@ -1,4 +1,0 @@
-osxcln
-git-pub "stamp-s3 dev"
-ssh esphome.home "cd /usr/share/pac/esphome && git pull"
-ssh esphome.ellis "cd /usr/share/pac/esphome && git pull"
