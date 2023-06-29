@@ -1,81 +1,104 @@
 color:
   - id: black
-    red: 0%
-    green: 0%
-    blue: 0%
+    red: 0
+    green: 0
+    blue: 0
   - id: dark_gray
-    red: 20%
-    green: 20%
-    blue: 20%
+    red: 0.3333
+    green: 0.3333
+    blue: 0.3333
   - id: gray
-    red: 50%
-    green: 50%
-    blue: 50%
+    red: 0.5
+    green: 0.5
+    blue: 0.5
   - id: light_gray
-    red: 70%
-    green: 70%
-    blue: 70%
+    red: 0.6667
+    green: 0.6667
+    blue: 0.6667
   - id: white
-    red: 100%
-    green: 100%
-    blue: 100%
+    red: 1
+    green: 1
+    blue: 1
   - id: dark_red
-    red: 30%
-    green: 0%
-    blue: 0%
+    red: 0.3
+    green: 0.05
+    blue: 0.05
   - id: red
-    red: 60%
-    green: 0%
-    blue: 0%
+    red: 1
+    green: 0
+    blue: 0
   - id: light_red
-    red: 100%
-    green: 0%
-    blue: 0%
-  - id: dark_green
-    red: 0%
-    green: 30%
-    blue: 0%
-  - id: green
-    red: 0%
-    green: 60%
-    blue: 0%
-  - id: light_green
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: dark_blue
-    red: 0%
-    green: 0%
-    blue: 30%
-  - id: blue
-    red: 0%
-    green: 0%
-    blue: 60%
-  - id: light_blue
-    red: 0%
-    green: 0%
-    blue: 100%
+    red: 1
+    green: 0.3
+    blue: 0.3
   - id: dark_orange
-    red: 60%
-    green: 30%
-    blue: 0%
+    red: 0.5
+    green: 0.2
+    blue: 0
   - id: orange
-    red: 100%
-    green: 50%
-    blue: 0%
+    red: 1
+    green: 0.5
+    blue: 0
   - id: light_orange
-    red: 100%
-    green: 80%
-    blue: 0%
+    red: 1
+    green: 0.7
+    blue: 0.2
   - id: dark_yellow
-    red: 60%
-    green: 60%
-    blue: 0%
+    red: 0.5
+    green: 0.5
+    blue: 0
   - id: yellow
-    red: 100%
-    green: 100%
-    blue: 0%
+    red: 1
+    green: 1
+    blue: 0
   - id: light_yellow
-    red: 100%
-    green: 100%
-    blue: 30%
+    red: 1
+    green: 1
+    blue: 0.3
+  - id: dark_green
+    red: 0.05
+    green: 0.3
+    blue: 0.05
+  - id: green
+    red: 0
+    green: 1
+    blue: 0
+  - id: light_green
+    red: 0.3
+    green: 1
+    blue: 0.3
+  - id: dark_blue
+    red: 0.05
+    green: 0.05
+    blue: 0.3
+  - id: blue
+    red: 0
+    green: 0
+    blue: 1
+  - id: light_blue
+    red: 0.3
+    green: 0.3
+    blue: 1
+  - id: dark_indigo
+    red: 0.2
+    green: 0
+    blue: 0.3
+  - id: indigo
+    red: 0.3
+    green: 0
+    blue: 0.5
+  - id: light_indigo
+    red: 0.5
+    green: 0.2
+    blue: 1
+  - id: dark_violet
+    red: 0.3
+    green: 0
+    blue: 0.2
+  - id: violet
+    red: 0.5
+    green: 0
+    blue: 0.5
+  - id: light_violet
+    red: 0.8
+    green: 
