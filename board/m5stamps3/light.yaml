@@ -1,7 +1,7 @@
-light:
-  - platform: neopixelbus
-    type: GRB
-    variant: SK6812
-    method: ESP32_RMT_1
-    num_leds: 1
-    pin: $pin_led
+- platform: neopixelbus
+  id: s3_led
+  type: GRB
+  variant: SK6812
+  method: ESP32_RMT_1
+  num_leds: 1
+  pin: $pin_led
