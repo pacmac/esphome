@@ -1,5 +1,5 @@
 packages:
-  device    : !include ../devices/tinypico.yaml
+  device    : !include ../board/tinypico/base.yaml
 
 substitutions:
   app         : "tinyclampd"
