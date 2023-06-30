@@ -39,6 +39,7 @@ esp32:
 
 logger:
 api:
+  reboot_timeout: 0s
 captive_portal:
 web_server:
 
