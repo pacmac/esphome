@@ -19,8 +19,8 @@ substitutions:
   pin_rx0: "GPIO3"
 
   # XH Connector
-  pin_a3: "GPIO32"
-  pin_a4: "GPIO33"
+  con_3: "GPIO32"
+  con_4: "GPIO33"
 
   
 esphome:
