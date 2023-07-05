@@ -1,5 +1,4 @@
 substitutions:
-  board       : "m5stack-atom"
   
   # I2C
   pin_scl: "GPIO22"
@@ -18,7 +17,7 @@ substitutions:
   pin_tx0: "GPIO1"
   pin_rx0: "GPIO3"
 
-  # XH Connector
+  #sConnector
   con_3: "GPIO32"
   con_4: "GPIO33"
 
@@ -27,12 +26,13 @@ esphome:
   name_add_mac_suffix: true
 
 esp32:
-  board: ${board}
+  board: m5stack-atom
   framework:
     type: arduino
 
 # Modules
 api:
+  reboot_timeout: 0s
 captive_portal:
 improv_serial:
 # esp32_improv:
@@ -47,7 +47,7 @@ light:
     num_leds: 1
     rgb_order: GRB
     id: ${name}_led
-    name: ${name} Status LED
+    name: Status LED
     effects:
       - random:
       - flicker:

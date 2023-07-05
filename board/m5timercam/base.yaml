@@ -1,0 +1,32 @@
+substitutions:
+  mac: "0000"
+
+esphome:
+  name: "m5_timercam"
+  friendly_name: "M5 TimerCam"
+
+esp32:
+  board: m5stack-timer-cam
+
+logger:
+api:
+  reboot_timeout: 0s
+captive_portal:
+web_server:
+
+esp32_camera:
+  external_clock:
+    pin: GPIO27
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO25
+    scl: GPIO23
+  data_pins: [GPIO32, GPIO35, GPIO34, GPIO5, GPIO39, GPIO18, GPIO36, GPIO19]
+  vsync_pin: GPIO22
+  href_pin: GPIO26
+  pixel_clock_pin: GPIO21
+  reset_pin: GPIO15
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
