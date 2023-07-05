@@ -17,7 +17,10 @@ esphome:
 
 esp32:
   board: m5stack-timer-cam
+  framework:
+    type: arduino
 
+psram:
 logger:
 api:
   reboot_timeout: 0s
@@ -45,3 +48,34 @@ time:
   - platform: homeassistant
     id: home_time
     timezone: Asia/Singapore
+
+output:
+  - platform: gpio
+    pin: GPIO4
+    id: gpio_4
+
+  - id: camera_led
+    platform: gpio
+    pin: GPIO2
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO37
+    name: "Camera button"
+
+light:
+  - platform: binary
+    name: "Camera LED"
+    output: camera_led
+
+switch:
+  - platform: gpio
+    pin: GPIO33
+    name: "Camera Bat On"
+
+sensor:
+  - platform: adc
+    pin: GPIO38
+    name: "Battery Voltage"
+    filters:
+      multiply: 3.3
