@@ -4,6 +4,7 @@ substitutions:
 esphome:
   name: "m5_timercam"
   friendly_name: "M5 TimerCam"
+  name_add_mac_suffix: true
 
 esp32:
   board: m5stack-timer-cam
@@ -30,3 +31,8 @@ esp32_camera:
 esp32_camera_web_server:
   - port: 8080
     mode: stream
+    
+time:
+  - platform: homeassistant
+    id: home_time
+    timezone: Asia/Singapore
