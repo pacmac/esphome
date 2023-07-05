@@ -1,6 +1,15 @@
 substitutions:
   mac: "0000"
-
+  con_1: "0v"
+  con_2: "5v"
+  con_3: "GPIO4"
+  con_4: "GPIO13"
+  
+i2c:
+  - id: bus_a
+    sda: $con_3 
+    scl: $con_4
+  
 esphome:
   name: "m5_timercam"
   friendly_name: "M5 TimerCam"
