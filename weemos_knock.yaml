@@ -1,0 +1,319 @@
+esphome:
+  name: $name
+  friendly_name: Knockers
+  name_add_mac_suffix: true
+  # on_boot:
+  #   - switch.turn_on: beep
+
+packages:
+  wifi        : !include pri/wifi.yaml
+  board       : !include board/d1minilite/base.yaml
+  ## info        : !include lib/info.yaml
+
+substitutions:
+  mac           : "87e1"
+  app           : "d1-knock"
+  name          : $app
+  upmin_ms      : "100"
+  upmax_ms      : "1250"
+
+time:
+  - platform: sntp
+    id: mytime
+    timezone: Asia/Singapore
+
+mqtt:
+  broker: mqtt.home
+  username: mqttuser
+  password: mqttpwd
+
+api:
+  reboot_timeout: 0s
+
+globals:
+  - id: downms_min
+    type: int
+    restore_value: yes
+    initial_value: "20"
+
+  - id: downms_max
+    type: int
+    restore_value: yes
+    initial_value: "100"
+
+  - id: last_knock
+    type: std::string
+    restore_value: yes
+
+  - id: window_key
+    type: int
+    restore_value: no
+    initial_value: "-1"
+
+  - id: window_end_ts
+    type: unsigned long
+    restore_value: no
+    initial_value: "0"
+
+  - id: knocks_left
+    type: int
+    restore_value: no
+    initial_value: "0"
+
+wifi:
+  use_address:  192.168.0.70
+  min_auth_mode: WPA
+
+web_server:
+
+output:
+  - platform: gpio
+    pin: $pin_d3
+    id: coil_pin
+
+number:
+  - platform: template
+    optimistic: true
+    id: count
+    step: 1
+    min_value: 1
+    max_value: 10
+
+  - platform: template
+    optimistic: true
+    id: rand_ms
+    internal: true
+    step: 1
+    min_value: 1
+    max_value: 1000
+    mode: box
+
+  - platform: template
+    id: down_ms
+    name: "6. Down MS"
+    mode: box
+    step: 5
+    min_value: 20
+    max_value: 100
+    initial_value: 20
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: start_hr
+    name: "1. Start Hour"
+    mode: box
+    step: 1
+    min_value: 0
+    max_value: 23
+    initial_value: 12
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: start_min
+    name: "2. Start Minute"
+    mode: box
+    step: 1
+    min_value: 0
+    max_value: 59
+    initial_value: 0
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: end_hr
+    name: "3. End Hour"
+    mode: box
+    step: 1
+    min_value: 0
+    max_value: 23
+    initial_value: 6
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: end_min
+    name: "4. End Minute"
+    mode: box
+    step: 1
+    min_value: 0
+    max_value: 59
+    initial_value: 0
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: knock_count
+    name: "5. Knock Count"
+    mode: box
+    step: 1
+    min_value: 1
+    max_value: 10
+    initial_value: 3
+    restore_value: true
+    optimistic: true
+
+text_sensor:
+  - platform: template
+    name: "8. Next Knock"
+    id: next_knock
+
+  - platform: template
+    name: "9. Last Knock"
+    id: last_knock_display
+    lambda: |-
+      return id(last_knock);
+
+sensor:
+  - platform: uptime
+    id: _uptime
+    internal: true
+
+status_led:
+  pin: $pin_led
+
+switch:
+  - platform: template
+    name: "7. Timer"
+    id: coil
+    optimistic: true
+
+    on_turn_on:
+      - while:
+          condition:
+            lambda: return id(coil).state == 1;
+          then:
+
+            - if:
+                condition:
+                  lambda: return id(mytime).now().is_valid();
+                then:
+                  - lambda: |-
+                      auto now = id(mytime).now();
+
+                      const int sh = int(id(start_hr).state);
+                      const int sm = int(id(start_min).state);
+                      const int eh = int(id(end_hr).state);
+                      const int em = int(id(end_min).state);
+
+                      const int start_m = sh * 60 + sm;
+                      const int end_m   = eh * 60 + em;
+                      const int now_m   = now.hour * 60 + now.minute;
+
+                      const bool wraps = (start_m > end_m);
+
+                      bool in_window = false;
+                      if (!wraps)
+                        in_window = (now_m >= start_m && now_m < end_m);
+                      else
+                        in_window = (now_m >= start_m || now_m < end_m);
+
+                      int wk = int(now.day_of_year);
+                      if (wraps && now_m < end_m)
+                        wk--;
+
+                      if (in_window && wk != id(window_key)) {
+
+                        id(window_key) = wk;
+
+                        id(knocks_left) = int(id(knock_count).state);
+
+                        // Build end timestamp via mktime
+                        struct tm end_tm;
+                        memset(&end_tm, 0, sizeof(end_tm));
+                        end_tm.tm_year = now.year - 1900;
+                        end_tm.tm_mon  = now.month - 1;
+                        end_tm.tm_mday = now.day_of_month;
+                        end_tm.tm_hour = eh;
+                        end_tm.tm_min  = em;
+                        end_tm.tm_sec  = 0;
+
+                        // If window wraps midnight and we're in the evening portion, end is tomorrow
+                        if (wraps && now_m >= start_m)
+                          end_tm.tm_mday += 1;  // mktime normalises this
+
+                        id(window_end_ts) = (unsigned long)mktime(&end_tm);
+
+                        ESP_LOGI("knock",
+                                 "WINDOW START knocks=%d end_ts=%lu",
+                                 id(knocks_left),
+                                 id(window_end_ts));
+                      }
+
+                  - if:
+                      condition:
+                        lambda: return id(knocks_left) > 0;
+                      then:
+                        - lambda: |-
+                            auto now = id(mytime).now();
+                            long remaining_min = ((long)id(window_end_ts) - (long)now.timestamp) / 60;
+                            if (remaining_min < 1) remaining_min = 1;
+
+                            int min_gap = 1;
+                            int max_delay = remaining_min - ((id(knocks_left)-1) * min_gap);
+                            if (max_delay < min_gap)
+                              max_delay = min_gap;
+
+                            int delay_min = random(min_gap, max_delay + 1);
+
+                            id(rand_ms).publish_state(delay_min);
+
+                            // Show next knock time
+                            time_t trigger_ts = now.timestamp + (delay_min * 60);
+                            struct tm *t = localtime(&trigger_ts);
+                            char buf[20];
+                            strftime(buf, sizeof(buf), "%H:%M:%S", t);
+                            char msg[64];
+                            snprintf(msg, sizeof(msg), "%s (%d left)", buf, id(knocks_left));
+                            id(next_knock).publish_state(msg);
+
+                            ESP_LOGI("knock",
+                                     "Delay: %d Minutes remaining=%ld knocks_left=%d",
+                                     delay_min,
+                                     remaining_min,
+                                     id(knocks_left));
+
+                        - delay: !lambda return int(id(rand_ms).state * 60000);
+
+                        - script.execute:
+                            id: do_knocks
+                            no_cycles: 1
+
+                        - lambda: id(knocks_left)--;
+
+                        - if:
+                            condition:
+                              lambda: return id(knocks_left) <= 0;
+                            then:
+                              - lambda: id(next_knock).publish_state("Done");
+                              - switch.turn_off: coil
+
+                      else:
+                        - delay: 30s
+                else:
+                  - delay: 10s
+
+script:
+- id: do_knocks
+  parameters:
+    no_cycles: int
+  then:
+    - lambda: id(count).state = 0;
+    - while:
+        condition:
+          lambda: return id(count).state < no_cycles;
+        then:
+          - output.turn_on: coil_pin
+          - delay: !lambda "return id(down_ms).state;"
+          - output.turn_off: coil_pin
+          - delay: !lambda 'return random($upmin_ms, $upmax_ms + 1);'
+          - lambda: id(count).state += 1;
+          - logger.log: "@@@@@@@ Knocked"
+          - globals.set:
+              id: last_knock
+              value: !lambda return id(mytime).now().strftime("%H:%M:%S");
+
+    - mqtt.publish:
+        topic: "d1-knock/knocked"
+        payload: !lambda return id(mytime).now().strftime("%Y-%m-%d %H:%M:%S");
